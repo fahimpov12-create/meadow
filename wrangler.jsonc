@@ -1,0 +1,13 @@
+{
+  "name": "fahim-meadow",
+  "compatibility_date": "2026-10-26",
+  "assets": {
+    "directory": "./public"
+  },
+  "routes": [
+    {
+      "pattern": "meadow.fahimomi.com",
+      "custom_domain": true
+    }
+  ]
+}

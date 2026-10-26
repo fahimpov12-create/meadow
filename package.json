@@ -1,0 +1,11 @@
+{
+  "name": "fahim-meadow",
+  "version": "1.0.0",
+  "private": false,
+  "description": "An interactive open-source WebGL meadow",
+  "scripts": {
+    "dev": "node serve.cjs",
+    "start": "node serve.cjs"
+  },
+  "license": "MIT"
+}

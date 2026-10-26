@@ -1,0 +1,24 @@
+Asset credits
+- person-remade.glb: Meadow 3.8 derivative of the supplied CC0 MakeHuman-based person model.
+  Reshaped face and clothing; new eyes, irises, brows, hair, earrings and laces.
+  Built by the included build-character-v38.cjs and sculpt-character-v38.cjs scripts.
+  Uses the skin-diffuse.png texture credited below. This GLB needs no meshopt decoder.
+- skin-diffuse.png: "Young Eurasian Female" by OnlyTheGhosts, CC0, from the official MakeHuman
+  skins01 pack. https://static.makehumancommunity.org/assets/assetpacks/skins01.html
+  Source: https://files2.makehumancommunity.org/asset_packs/skins01/skins01_cc0.zip
+  CC0 legal text: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+  Texture used unmodified; material shading is supplied by this project.
+- van.glb, van-q.glbz: the camper van, modelled in Blender for this project (original, no third-party mesh).
+- person.glb, person-q.glbz: the seated woman, built in Blender for this project from the MakeHuman base mesh
+  and morph targets (CC0, http://www.makehumancommunity.org); clothing, hair, pose and rig made for this project.
+- oak-leaves.png: from ez-tree by Daniel Greenheck (MIT License), https://github.com/dgreenheck/ez-tree
+- bark-color.jpg, bark-normal.jpg, bark-rough.jpg: "Bark Brown 02" from Poly Haven (CC0),
+  https://polyhaven.com/a/bark_brown_02, via ez-tree
+- Bundled locally for this preview: three.js r128 with its GLTFLoader, meshopt decoder and post-processing
+  examples (MIT License).
+The .glb models are compressed with meshopt (decoded with WebAssembly). The -q.glbz copies are a gzip
+fallback the hero uses automatically on pages that block WebAssembly.
+- sky-clouds.jpg, sky-clouds-a.jpg (+ the half-size -s copies for phones): the fair-weather cumulus sky, rendered
+  for this project with an offline volumetric renderer (original; no third-party imagery). Three depth layers (near,
+  middle, far) are stacked in one atlas so they can drift at their own speeds. RGB holds three light passes (high
+  sun, low sun/moon, sky light) and the -a image the cloud opacity, so the hero relights them for any time of day.

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#182721">
+<title>Meadow — An interactive landscape by Fahim Omi</title>
+<meta name="description" content="Step into a living 3D meadow. Explore changing seasons, drifting clouds and a camper under the stars. An open-source WebGL experiment by Fahim Omi.">
+<link rel="canonical" href="https://meadow.fahimomi.com/">
+<link rel="icon" href="data:,">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#182721;color:#fff;font:14px/1.4 system-ui,sans-serif}button,select{font:inherit}button,a,select{-webkit-tap-highlight-color:transparent}.hero{position:relative;height:100vh;height:100dvh;min-height:500px}.top{position:absolute;inset:28px 32px auto;display:flex;align-items:flex-start;justify-content:space-between;gap:20px;pointer-events:none;z-index:4}.brand{padding:16px 20px;border:1px solid #ffffff25;border-radius:18px;background:#14251e85;backdrop-filter:blur(16px);pointer-events:auto}.eyebrow{font-size:10px;letter-spacing:.2em;text-transform:uppercase;opacity:.7}h1{font-family:Georgia,serif;font-size:34px;line-height:1.05;font-weight:400;margin:7px 0 8px;letter-spacing:-.04em}.brand p{font-size:12px;margin:0;opacity:.72}.tools{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;pointer-events:auto;max-width:520px}button,select,.link{color:#fff;background:#14251ea6;backdrop-filter:blur(16px);border:1px solid #ffffff35;border-radius:30px;padding:10px 15px;text-decoration:none;cursor:pointer;font-size:12px}button:hover,.link:hover{background:#14251ed9}select option{background:#182721}.times{position:absolute;top:172px;left:32px;display:flex;gap:6px;z-index:4}.times button{padding:8px 13px}.times button[aria-pressed=true]{background:#f2ead6;color:#253327;border-color:#f2ead6}:focus-visible{outline:2px solid #fff;outline-offset:4px}.status{position:absolute;right:28px;bottom:27px;z-index:3;max-width:240px;text-align:right;font-size:11px;text-shadow:0 1px 6px #000;opacity:.85}.capture .top,.capture .times,.capture .mh-ui,.capture .status,.clean .top,.clean .times,.clean .mh-ui,.clean .status{display:none}.restore{display:none;position:absolute;top:18px;right:18px;z-index:8}.clean .restore{display:block}.capture .restore{display:none}@media(max-width:700px){.top{inset:16px 16px auto}.brand{padding:12px 15px}.brand p{display:none}h1{font-size:26px}.tools{max-width:175px;gap:5px}.tools button,.tools select,.tools .link{font-size:11px;padding:8px 10px}.times{left:16px;top:140px;gap:4px}.times button{padding:7px 10px;font-size:11px}.status{right:16px;bottom:80px;font-size:10px;max-width:180px}}
+@media(max-width:700px){.top{gap:10px}.brand{min-width:0;flex:1}.tools{flex:0 0 150px}.times{top:220px}h1{font-size:24px}}
+</style>
+</head>
+<body>
+<main class="hero" id="hero" aria-label="Interactive meadow landscape">
+  <header class="top">
+    <div class="brand"><div class="eyebrow" id="edition">Meadow / 3.8</div><h1>Room to breathe.</h1><p>An interactive landscape by Fahim Omi.</p></div>
+    <div class="tools">
+      <select id="quality" aria-label="Rendering quality"><option value="auto">Adaptive quality</option><option value="high">High quality</option><option value="ultra">Ultra quality</option><option value="low">Low quality</option></select>
+      <select id="view" aria-label="Camera view"><option value="scene">Meadow view</option><option value="vehicle">Vehicle detail</option><option value="character">Character detail</option></select>
+      <button id="clean" type="button">Hide controls</button>
+      <button id="save" type="button">Save PNG</button>
+      <a class="link" href="https://portfolio.fahimomi.com/">← All projects</a>
+      <a class="link" href="https://github.com/fahimpov12-create/meadow" target="_blank" rel="noopener noreferrer">Source ↗</a>
+    </div>
+  </header>
+  <nav class="times" aria-label="Time of day"><button type="button" data-light="noon">Noon</button><button type="button" data-light="golden">Golden hour</button><button type="button" data-light="dusk">Dusk</button><button type="button" data-light="night">Night</button></nav>
+  <div class="status" id="status" role="status">Drag the tree or van. Click the meadow for wind.<br>Open Customize for seasons and weather.</div>
+  <button class="restore" type="button" id="restore">Show controls</button>
+</main>
+<script src="vendor/build/three.min.js"></script>
+<script src="vendor/examples/js/shaders/CopyShader.js"></script>
+<script src="vendor/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="vendor/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="vendor/examples/js/postprocessing/RenderPass.js"></script>
+<script src="vendor/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="vendor/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<script src="vendor/examples/js/loaders/GLTFLoader.js"></script>
+<script src="vendor/examples/js/libs/meshopt_decoder.js"></script>
+<script>
+const params = new URLSearchParams(location.search);
+
+const capture = params.has('capture');
+document.body.classList.toggle('capture', capture);
+const script = document.createElement('script');
+script.src = 'meadow-hero.js';
+script.onload = function () {
+  const quality = ['auto','high','ultra','low'].includes(params.get('quality')) ? params.get('quality') : 'auto';
+  const light = ['noon','golden','dusk','night'].includes(params.get('light')) ? params.get('light') : 'golden';
+  window.meadow = MeadowHero.mount(document.getElementById('hero'), {
+    season:'summer',weather:'clear',light,quality,panel:true,character:true,
+    assetsPath:'meadow-assets/',scriptsPath:'vendor/examples/js/',debug:capture,
+    skyClouds:params.get('clouds') !== 'live'
+  });
+  document.getElementById('quality').value=quality;
+  const view=['scene','vehicle','character'].includes(params.get('view'))?params.get('view'):'scene';
+  if(meadow.setView)meadow.setView(view);
+  document.getElementById('view').value=view;
+  document.getElementById('view').onchange=e=>{if(meadow.setView)meadow.setView(e.target.value);params.set('view',e.target.value);history.replaceState(null,'','?'+params);};
+  document.getElementById('quality').onchange=e=>{params.set('quality',e.target.value);location.search=params.toString();};
+  function markLight(value){document.querySelectorAll('.times [data-light]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.light===value)));}
+  markLight(light);
+  document.querySelectorAll('.times [data-light]').forEach(b=>b.onclick=()=>{meadow.setLight(b.dataset.light);markLight(b.dataset.light);params.set('light',b.dataset.light);history.replaceState(null,'','?'+params);});
+  const lightLabel=document.querySelector('.mh-light-name');
+  if(lightLabel)new MutationObserver(()=>markLight(lightLabel.textContent.toLowerCase())).observe(lightLabel,{childList:true});
+  document.getElementById('clean').onclick=()=>document.body.classList.add('clean');
+  document.getElementById('restore').onclick=()=>document.body.classList.remove('clean');
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')document.body.classList.remove('clean');});
+  document.getElementById('save').onclick=()=>{
+    const status=document.getElementById('status');
+    try {const a=document.createElement('a');a.href=meadow.capture();a.download='meadow-natural-light.png';a.click();status.textContent='PNG saved at the current render resolution.';}
+    catch(error){status.textContent='Image export failed. Open this preview through the included local server.';console.error(error);}
+  };
+};
+document.head.appendChild(script);
+</script>
+</body>
+</html>
